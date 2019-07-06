@@ -26,7 +26,7 @@ let news;
 let log;
 
 mongoClient.connect(function (err, client) {
-    const db = client.db("heroku_hw9cvg3q");
+    const db = client.db("heroku_ww8906l5");
     collection = db.collection("users");
     news = db.collection("news");
     log = db.collection("log");
@@ -184,7 +184,7 @@ server.post('/timetableUpdate', (req, res, next) => {
 
 // todo: валидация
     mongoClient.connect(function (err, client) {
-        const db = client.db("heroku_hw9cvg3q");
+        const db = client.db("heroku_ww8906l5");
         const collection = db.collection("users");
         collection.replaceOne({username: userData.username}, {
             username: req.body.username,
@@ -229,7 +229,7 @@ server.post('/changePassword', (req, res, next) => {
         return;
     }
     mongoClient.connect(async function (err, client) {
-        const db = client.db("heroku_hw9cvg3q");
+        const db = client.db("heroku_ww8906l5");
         const collection = db.collection("users");
         collection.find({username: req.body.username}).toArray(function (err, result) {
             if (result.length !== 0) {
@@ -275,7 +275,7 @@ server.post('/updateData', (req, res, next) => {
     }
 
     mongoClient.connect(function (err, client) {
-        const db = client.db("heroku_hw9cvg3q");
+        const db = client.db("heroku_ww8906l5");
         const collection = db.collection("users");
         collection.replaceOne({username: userData.username}, {
             username: req.body.username,
@@ -390,7 +390,7 @@ server.post('/registration', (req, res, next) => {
     }
 
     mongoClient.connect(function (err, client) {
-        const db = client.db("heroku_hw9cvg3q");
+        const db = client.db("heroku_ww8906l5");
         const collection = db.collection("users");
         collection.find({username: req.body.nickname}).toArray(function (err, result) {
             if (result.length === 0) {
