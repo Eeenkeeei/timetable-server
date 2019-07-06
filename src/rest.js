@@ -17,7 +17,7 @@ server.use(rjwt(config.jwt).unless({
     path: ['/testlog', '/removeNews', '/getNewsList', '/auth', '/addNews', '/confirmAdminPassword', '/addAnswer', '/getSupportList', '/registration', '/updateData', '/websocket/attach', '/timetableUpdate', '/sync', '/changePassword'],
 }));
 
-const url = "mongodb://eeenkeeei:shiftr123@ds347707.mlab.com:47707/heroku_ww8906l5";
+const url = "mongodb://ROOT:shiftr123@ds347707.mlab.com:47707/heroku_ww8906l5";
 const mongoClient = new MongoClient(url, {useNewUrlParser: true});
 
 let collection;
