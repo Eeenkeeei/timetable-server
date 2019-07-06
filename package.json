@@ -1,0 +1,51 @@
+{
+  "name": "app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/rest.js",
+    "nodemon": "nodemon src/rest.js",
+    "test": "exit 0"
+  },
+  "engines": {
+    "node": "10.x"
+  },
+  "babel": {
+    "presets": [
+      [
+        "@babel/preset-env",
+        {
+          "useBuiltIns": "usage"
+        }
+      ]
+    ]
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^8.5.1",
+    "mongodb": "^3.2.7",
+    "restify": "^7.7.0",
+    "restify-errors": "^6.1.1",
+    "restify-jwt": "^0.4.0",
+    "restify-jwt-community": "^1.0.13",
+    "serve-static": "^1.14.1",
+    "serve-static-restify": "^3.0.0",
+    "watershed": "^0.4.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.5.0",
+    "@babel/core": "^7.5.0",
+    "@babel/preset-env": "^7.5.0",
+    "babel-jest": "^24.8.0",
+    "mongodb": "^3.2.7",
+    "jest": "^24.8.0",
+    "live-server": "^1.2.1",
+    "nodemon": "^1.19.1",
+    "restify-jwt": "^0.4.0",
+    "serve-static": "^1.14.1",
+    "serve-static-restify": "^3.0.0"
+  }
+}
