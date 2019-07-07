@@ -1,6 +1,8 @@
 exports.newUserConstructor = (password, email) => {
     const newUserObject = {
-        email: email, password: password
+        registrationDate: new Date(),
+        email: email,
+        password: password
     }
     return newUserObject;
 }
