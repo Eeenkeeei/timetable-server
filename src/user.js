@@ -19,6 +19,7 @@ exports.authenticate = (email, password) => {
                 if (data !== null) {
                     if (bcrypt.compareSync(password, data.password) === true) {
                         objectToSend = data;
+                        collection.updateOne({email: data.email}, {$set: {lastLoginDate: new Date()}});
                         // console.log(objectToSend);
                         console.log('OBJECT SEND authenticate');
                         resolve(objectToSend);

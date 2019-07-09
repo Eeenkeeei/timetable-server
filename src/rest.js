@@ -141,6 +141,7 @@ server.get('/user', (req, res, next) => {
                 res.send('Null');
             }
             res.send(data);
+            collection.updateOne({email: data.email}, {$set: {lastLoginDate: new Date()}});
             next()
         } catch (e) {
             return next(new InvalidCredentialsError());
