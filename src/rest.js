@@ -70,12 +70,12 @@ server.post('/removeNews', (req, res, next) => {
 
 server.post('/editNews', (req, res, next) => {
     console.log(req.body);
-    news.replaceOne({body: req.body.oldBody, header: req.body.oldHeader, data: req.body.oldData}, {
+    news.replaceOne({body: req.body.oldBody, header: req.body.oldHeader}, {
         body: req.body.body,
         header: req.body.header,
         author: req.body.author,
         img: req.body.img,
-        data: req.body.oldData
+        data: new Date()
     },()=>{
         res.send(true)
     });
