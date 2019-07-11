@@ -1,3 +1,4 @@
+const dbb = require("mongodb")
 const newUser = require('./newUser')
 const restify = require('restify');
 const {BadRequestError, NotFoundError, InvalidCredentialsError, UnauthorizedError} = require('restify-errors');
@@ -11,11 +12,12 @@ const server = restify.createServer({handleUpgrades: true});
 const ws = new watershed.Watershed();
 const bcrypt = require('bcryptjs');
 
+
 server.use(restify.plugins.bodyParser());
 server.use(restify.plugins.queryParser());
 
 server.use(rjwt(config.jwt).unless({
-    path: ['/testlog', '/removeNews', '/getNewsList', '/auth', '/addNews', '/confirmAdminPassword', '/addAnswer', '/getSupportList', '/registration', '/updateData', '/websocket/attach', '/timetableUpdate', '/sync', '/changePassword'],
+    path: ['/editNews', '/removeNews', '/getNewsList', '/auth', '/addNews', '/confirmAdminPassword', '/addAnswer', '/getSupportList', '/registration', '/updateData', '/websocket/attach', '/timetableUpdate', '/sync', '/changePassword'],
 }));
 
 const url = "mongodb://ROOT:shiftr123@ds347707.mlab.com:47707/heroku_ww8906l5";
@@ -23,7 +25,6 @@ const mongoClient = new MongoClient(url, {useNewUrlParser: true});
 
 let collection;
 let news;
-
 let log;
 
 mongoClient.connect(function (err, client) {
@@ -62,38 +63,35 @@ server.get('/getNewsList', (req, res, next) => {
 });
 
 server.post('/removeNews', (req, res, next) => {
-    console.log(req.body.id);
-    news.deleteOne({text: req.body.text}, function (err, result) {
-
+    news.deleteOne({body: req.body.body}, function (err, result) {
     });
+    res.send(true)
 });
 
-server.post('/testlog', (req, res, next) => {
+server.post('/editNews', (req, res, next) => {
     console.log(req.body);
-    let object = {
-        string: req.body,
-        date: new Date()
-    };
-    log.insertOne(object, function (err, result) {
-        console.log('Добавлено в log');
-        res.send('added');
-        if (err) {
-            return console.log(err);
-        }
+    news.replaceOne({body: req.body.oldBody, header: req.body.oldHeader, data: req.body.oldData}, {
+        body: req.body.body,
+        header: req.body.header,
+        author: req.body.author,
+        img: req.body.img,
+        data: req.body.oldData
+    },()=>{
+        res.send(true)
     });
 });
 
 server.post('/addNews', (req, res, next) => {
-    console.log(req.body);
     let object = {
         header: req.body.header,
         author: req.body.author,
-        text: req.body.body
+        body: req.body.body,
+        img: req.body.img,
+        data: new Date()
     };
 
     news.insertOne(object, function (err, result) {
-        console.log('Добавлено');
-        res.send('added');
+        res.send(true);
         if (err) {
             return console.log(err);
         }
