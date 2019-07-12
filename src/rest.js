@@ -17,7 +17,7 @@ server.use(restify.plugins.bodyParser());
 server.use(restify.plugins.queryParser());
 
 server.use(rjwt(config.jwt).unless({
-    path: ['/removeUserAdmin', '/getUserDataFromAdmin', '/addAdmin', '/editNews', '/removeNews', '/getNewsList', '/auth', '/addNews', '/confirmAdminPassword', '/addAnswer', '/getSupportList', '/registration', '/updateData', '/websocket/attach', '/timetableUpdate', '/sync', '/changePassword'],
+    path: ['/deleteAccount', '/removeUserAdmin', '/getUserDataFromAdmin', '/addAdmin', '/editNews', '/removeNews', '/getNewsList', '/auth', '/addNews', '/confirmAdminPassword', '/addAnswer', '/getSupportList', '/registration', '/updateData', '/websocket/attach', '/timetableUpdate', '/sync', '/changePassword'],
 }));
 
 const url = "mongodb://ROOT:shiftr123@ds347707.mlab.com:47707/heroku_ww8906l5";
@@ -128,7 +128,11 @@ server.post('/removeUserAdmin', (req, res, next) => {
 });
 
 
-
+server.post('/deleteAccount', (req, res, next) => {
+    collection.remove({email: req.body.email});
+    res.send(true);
+    next()
+});
 
 server.post('/addNews', (req, res, next) => {
     let object = {
