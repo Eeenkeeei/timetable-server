@@ -17,7 +17,7 @@ server.use(restify.plugins.bodyParser());
 server.use(restify.plugins.queryParser());
 
 server.use(rjwt(config.jwt).unless({
-    path: ['/editNews', '/removeNews', '/getNewsList', '/auth', '/addNews', '/confirmAdminPassword', '/addAnswer', '/getSupportList', '/registration', '/updateData', '/websocket/attach', '/timetableUpdate', '/sync', '/changePassword'],
+    path: ['/removeUserAdmin', '/getUserDataFromAdmin', '/addAdmin', '/editNews', '/removeNews', '/getNewsList', '/auth', '/addNews', '/confirmAdminPassword', '/addAnswer', '/getSupportList', '/registration', '/updateData', '/websocket/attach', '/timetableUpdate', '/sync', '/changePassword'],
 }));
 
 const url = "mongodb://ROOT:shiftr123@ds347707.mlab.com:47707/heroku_ww8906l5";
@@ -80,6 +80,55 @@ server.post('/editNews', (req, res, next) => {
         res.send(true)
     });
 });
+
+
+
+server.post('/addAdmin', (req, res, next) => {
+    collection.find({email: req.body.email}).toArray( (err, result) => {
+        if (result[0] !== undefined){
+            collection.updateOne({email: req.body.email}, {$set: {admin: true}});
+            res.send(true)
+        }
+    });
+    collection.find({email: req.body.email}).toArray( (err, result) => {
+        if (result.length === 0){
+            res.send('false')
+        }
+    });
+    next()
+});
+
+server.post('/getUserDataFromAdmin', (req, res, next) => {
+    collection.find({email: req.body.email}).toArray( (err, result) => {
+        if (result[0] !== undefined){
+            res.send(result[0])
+        }
+    });
+    collection.find({email: req.body.email}).toArray( (err, result) => {
+        if (result.length === 0){
+            res.send('false')
+        }
+    });
+    next()
+});
+
+server.post('/removeUserAdmin', (req, res, next) => {
+    collection.find({email: req.body.email}).toArray( (err, result) => {
+        if (result[0] !== undefined){
+            collection.updateOne({email: req.body.email}, {$set: {admin: false}});
+            res.send(true)
+        }
+    });
+    collection.find({email: req.body.email}).toArray( (err, result) => {
+        if (result.length === 0){
+            res.send('false')
+        }
+    });
+    next()
+});
+
+
+
 
 server.post('/addNews', (req, res, next) => {
     let object = {
