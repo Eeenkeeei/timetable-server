@@ -77,22 +77,21 @@ server.post('/editNews', (req, res, next) => {
         author: req.body.author,
         img: req.body.img,
         data: moment().format(dateFormatForMoment)
-    },()=>{
+    }, () => {
         res.send(true)
     });
 });
 
 
-
 server.post('/addAdmin', (req, res, next) => {
-    collection.find({email: req.body.email}).toArray( (err, result) => {
-        if (result[0] !== undefined){
+    collection.find({email: req.body.email}).toArray((err, result) => {
+        if (result[0] !== undefined) {
             collection.updateOne({email: req.body.email}, {$set: {admin: true}});
             res.send(true)
         }
     });
-    collection.find({email: req.body.email}).toArray( (err, result) => {
-        if (result.length === 0){
+    collection.find({email: req.body.email}).toArray((err, result) => {
+        if (result.length === 0) {
             res.send('false')
         }
     });
@@ -100,13 +99,13 @@ server.post('/addAdmin', (req, res, next) => {
 });
 
 server.post('/getUserDataFromAdmin', (req, res, next) => {
-    collection.find({email: req.body.email}).toArray( (err, result) => {
-        if (result[0] !== undefined){
+    collection.find({email: req.body.email}).toArray((err, result) => {
+        if (result[0] !== undefined) {
             res.send(result[0])
         }
     });
-    collection.find({email: req.body.email}).toArray( (err, result) => {
-        if (result.length === 0){
+    collection.find({email: req.body.email}).toArray((err, result) => {
+        if (result.length === 0) {
             res.send('false')
         }
     });
@@ -114,14 +113,14 @@ server.post('/getUserDataFromAdmin', (req, res, next) => {
 });
 
 server.post('/removeUserAdmin', (req, res, next) => {
-    collection.find({email: req.body.email}).toArray( (err, result) => {
-        if (result[0] !== undefined){
+    collection.find({email: req.body.email}).toArray((err, result) => {
+        if (result[0] !== undefined) {
             collection.updateOne({email: req.body.email}, {$set: {admin: false}});
             res.send(true)
         }
     });
-    collection.find({email: req.body.email}).toArray( (err, result) => {
-        if (result.length === 0){
+    collection.find({email: req.body.email}).toArray((err, result) => {
+        if (result.length === 0) {
             res.send('false')
         }
     });
@@ -317,38 +316,18 @@ server.post('/updateData', (req, res, next) => {
     console.log('UPDATE DATA');
     let userData = req.body;
     console.log(userData);
-    if (isNaN(req.body.age) === true) {
-        console.log('В возрасте не число');
-        resultFlag = 'Bad Request(age)';
-        res.send(resultFlag);
-        next();
-        return;
-    }
 
-    mongoClient.connect(function (err, client) {
-        const db = client.db("heroku_ww8906l5");
-        const collection = db.collection("users");
-        collection.replaceOne({username: userData.username}, {
-            username: req.body.username,
-            password: req.body.password,
-            email: req.body.email,
-            edu: req.body.edu,
-            gender: req.body.gender,
-            age: req.body.age,
-            timetable: req.body.timetable,
-            readLater: req.body.readLater,
-            tasks: req.body.tasks,
-            notes: req.body.notes,
-            lessonsTimetable: req.body.lessonsTimetable,
-            startPage: req.body.startPage,
-            support: req.body.support,
-            lecturers: req.body.lecturers,
-            noteTags: req.body.noteTags
-        });
-        resultFlag = 'Data updated';
-        console.log(resultFlag);
-        res.send(resultFlag);
+
+    collection.replaceOne({email: req.body.email}, {
+        email: req.body.email,
+        password: req.body.password,
+        registrationDate: req.body.registrationDate,
+        lastLoginDate: req.body.lastLoginDate,
+        admin: req.body.admin,
+        lessons: req.body.lessons
     });
+    console.log('Data updated');
+    res.send(req.body);
     next();
 });
 
