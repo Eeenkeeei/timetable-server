@@ -11,7 +11,8 @@ const watershed = require('watershed');
 const server = restify.createServer({handleUpgrades: true});
 const ws = new watershed.Watershed();
 const bcrypt = require('bcryptjs');
-
+const moment = require('moment');
+const dateFormatForMoment = 'Do MMMM YYYY, HH:mm:ss';
 
 server.use(restify.plugins.bodyParser());
 server.use(restify.plugins.queryParser());
@@ -75,7 +76,7 @@ server.post('/editNews', (req, res, next) => {
         header: req.body.header,
         author: req.body.author,
         img: req.body.img,
-        data: new Date()
+        data: moment().format(dateFormatForMoment)
     },()=>{
         res.send(true)
     });
@@ -127,6 +128,8 @@ server.post('/removeUserAdmin', (req, res, next) => {
     next()
 });
 
+moment.locale('ru');
+console.log(moment().utcOffset())
 
 server.post('/deleteAccount', (req, res, next) => {
     collection.remove({email: req.body.email});
@@ -140,7 +143,7 @@ server.post('/addNews', (req, res, next) => {
         author: req.body.author,
         body: req.body.body,
         img: req.body.img,
-        data: new Date()
+        data: moment().format(dateFormatForMoment)
     };
 
     news.insertOne(object, function (err, result) {
@@ -192,7 +195,7 @@ server.get('/user', (req, res, next) => {
                 res.send('Null');
             }
             res.send(data);
-            collection.updateOne({email: data.email}, {$set: {lastLoginDate: new Date()}});
+            collection.updateOne({email: data.email}, {$set: {lastLoginDate: moment().format(dateFormatForMoment)}});
             next()
         } catch (e) {
             return next(new InvalidCredentialsError());

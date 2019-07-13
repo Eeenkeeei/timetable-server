@@ -26,6 +26,8 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "jsonwebtoken": "^8.5.1",
+    "moment": "^2.24.0",
+    "momentjs": "^2.0.0",
     "mongodb": "^3.2.7",
     "restify": "^7.7.0",
     "restify-errors": "^6.1.1",

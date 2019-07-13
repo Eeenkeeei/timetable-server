@@ -6,6 +6,9 @@ const MongoClient = require("mongodb").MongoClient;
 const url = "mongodb://ROOT:shiftr123@ds347707.mlab.com:47707/heroku_ww8906l5";
 const mongoClient = new MongoClient(url, {useNewUrlParser: true});
 const bcrypt = require('bcryptjs');
+const moment = require('moment');
+moment.locale('ru');
+const dateFormatForMoment = 'Do MMMM YYYY, HH:mm:ss';
 
 exports.authenticate = (email, password) => {
     return new Promise((resolve, reject) => {
@@ -19,7 +22,7 @@ exports.authenticate = (email, password) => {
                 if (data !== null) {
                     if (bcrypt.compareSync(password, data.password) === true) {
                         objectToSend = data;
-                        collection.updateOne({email: data.email}, {$set: {lastLoginDate: new Date()}});
+                        collection.updateOne({email: data.email}, {$set: {lastLoginDate: moment().format(dateFormatForMoment)}});
                         // console.log(objectToSend);
                         console.log('OBJECT SEND authenticate');
                         resolve(objectToSend);
