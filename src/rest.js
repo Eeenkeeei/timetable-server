@@ -324,7 +324,8 @@ server.post('/updateData', (req, res, next) => {
         registrationDate: req.body.registrationDate,
         lastLoginDate: req.body.lastLoginDate,
         admin: req.body.admin,
-        lessons: req.body.lessons
+        lessons: req.body.lessons,
+        lessonTasks: req.body.lessonTasks
     });
     console.log('Data updated');
     res.send(req.body);
