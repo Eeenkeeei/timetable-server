@@ -1,4 +1,3 @@
-const dbb = require("mongodb")
 const newUser = require('./newUser')
 const restify = require('restify');
 const {BadRequestError, NotFoundError, InvalidCredentialsError, UnauthorizedError} = require('restify-errors');
@@ -325,7 +324,8 @@ server.post('/updateData', (req, res, next) => {
         lastLoginDate: req.body.lastLoginDate,
         admin: req.body.admin,
         lessons: req.body.lessons,
-        lessonTasks: req.body.lessonTasks
+        lessonTasks: req.body.lessonTasks,
+        teachers: req.body.teachers
     });
     console.log('Data updated');
     res.send(req.body);

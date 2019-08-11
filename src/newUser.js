@@ -13,7 +13,8 @@ exports.newUserConstructor = (password, email) => {
             unevenWeek: []
         },
         lastLoginDate: moment().format(dateFormatForMoment),
-        lessonTasks: []
+        lessonTasks: [],
+        teachers: []
     };
     return newUserObject;
 }
