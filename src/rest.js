@@ -21,7 +21,9 @@ server.use(rjwt(config.jwt).unless({
 }));
 
 const url = "mongodb://ROOT:shiftr123@ds347707.mlab.com:47707/heroku_ww8906l5";
-const mongoClient = new MongoClient(url, {useNewUrlParser: true});
+const mongoClient = new MongoClient(url, {useNewUrlParser: true,
+    poolSize: 2,
+    promiseLibrary: global.Promise});
 
 let collection;
 let news;
@@ -32,7 +34,8 @@ mongoClient.connect(function (err, client) {
     collection = db.collection("users");
     news = db.collection("news");
     log = db.collection("log");
-});
+}
+);
 
 
 server.pre((req, res, next) => {
@@ -152,36 +155,6 @@ server.post('/addNews', (req, res, next) => {
     });
 });
 
-
-server.post('/confirmAdminPassword', (req, res, next) => {
-    console.log('confirm', req.body);
-    const password = 'shiftr123';
-    if (req.body.password === password) {
-        res.send('confirm')
-    } else {
-        res.send('not confirm')
-    }
-    next();
-});
-
-server.post('/addAnswer', (req, res, next) => {
-    console.log(req.body);
-    collection.find({username: req.body.username}).toArray(function (err, result) {
-        let supportArray = result[0].support;
-        for (const question of supportArray) {
-            if (question.theme === req.body.theme && question.question === req.body.question) {
-                supportArray[supportArray.indexOf(question)].status = req.body.status;
-                collection.updateOne({username: req.body.username}, {$set: {support: supportArray}});
-                console.log('Answer added');
-                return;
-            }
-        }
-    });
-    res.send('updated');
-    next()
-});
-
-
 server.get('/user', (req, res, next) => {
     console.log('GET USER');
     console.log(req.user.username, req.user.password);
@@ -209,12 +182,15 @@ server.post('/auth', (req, res, next) => {
             if (data === null) {
                 return next(new InvalidCredentialsError());
             }
-            let token = jwt.sign(data, config.jwt.secret, {
-                expiresIn: '1d'
+            const dataForToken = {
+                password: data.password,
+                email: data.email
+            }
+            let token = jwt.sign(dataForToken, config.jwt.secret, {
+                expiresIn: '7d'
             });
 
             let {iat, exp} = jwt.decode(token);
-            console.log('token', token);
             res.send({iat, exp, token});
             next()
         } catch (e) {
