@@ -35,7 +35,8 @@
     "restify-jwt-community": "^1.0.13",
     "serve-static": "^1.14.1",
     "serve-static-restify": "^3.0.0",
-    "watershed": "^0.4.0"
+    "watershed": "^0.4.0",
+    "uuid": "latest"
   },
   "devDependencies": {
     "@babel/cli": "^7.5.0",

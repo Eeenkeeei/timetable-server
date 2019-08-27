@@ -1,17 +1,16 @@
 const newUser = require('./newUser')
 const restify = require('restify');
-const {BadRequestError, NotFoundError, InvalidCredentialsError, UnauthorizedError} = require('restify-errors');
+const {InvalidCredentialsError} = require('restify-errors');
 const MongoClient = require("mongodb").MongoClient;
 const rjwt = require('restify-jwt-community');
 const jwt = require('jsonwebtoken');
 const config = require('./config');
 const user = require('./user');
-const watershed = require('watershed');
 const server = restify.createServer({handleUpgrades: true});
-const ws = new watershed.Watershed();
 const bcrypt = require('bcryptjs');
 const moment = require('moment');
 const dateFormatForMoment = 'Do MMMM YYYY, HH:mm:ss';
+const uuidv4 = require('uuid/v4');
 
 server.use(restify.plugins.bodyParser());
 server.use(restify.plugins.queryParser());
@@ -21,20 +20,39 @@ server.use(rjwt(config.jwt).unless({
 }));
 
 const url = "mongodb://ROOT:shiftr123@ds347707.mlab.com:47707/heroku_ww8906l5";
-const mongoClient = new MongoClient(url, {useNewUrlParser: true,
+const mongoClient = new MongoClient(url, {
+    useNewUrlParser: true,
     poolSize: 2,
-    promiseLibrary: global.Promise});
+    promiseLibrary: global.Promise
+});
 
 let collection;
 let news;
 let log;
 
 mongoClient.connect(function (err, client) {
-    const db = client.db("heroku_ww8906l5");
-    collection = db.collection("users");
-    news = db.collection("news");
-    log = db.collection("log");
-}
+        const db = client.db("heroku_ww8906l5");
+        collection = db.collection("users");
+        // collection.updateMany({},
+        //     {
+        //         $set: {
+        //             "lessonTime": [
+        //                 {id: uuidv4(), lessonNumber: 1, lessonStartTime: '8:00', lessonFinishTime: '9:30'},
+        //                 {id: uuidv4(), lessonNumber: 2, lessonStartTime: '9:40', lessonFinishTime: '11:10'},
+        //                 {id: uuidv4(), lessonNumber: 3, lessonStartTime: '11:20', lessonFinishTime: '12:50'},
+        //                 {id: uuidv4(), lessonNumber: 4, lessonStartTime: '13:30', lessonFinishTime: '15:00'},
+        //                 {id: uuidv4(), lessonNumber: 5, lessonStartTime: '15:10', lessonFinishTime: '16:40'},
+        //                 {id: uuidv4(), lessonNumber: 6, lessonStartTime: '16:50', lessonFinishTime: '18:10'},
+        //             ]
+        //         }
+        //     },
+        //     {
+        //         upsert: false,
+        //         multi: true
+        //     });
+        news = db.collection("news");
+        log = db.collection("log");
+    }
 );
 
 
@@ -301,7 +319,8 @@ server.post('/updateData', (req, res, next) => {
         admin: req.body.admin,
         lessons: req.body.lessons,
         lessonTasks: req.body.lessonTasks,
-        teachers: req.body.teachers
+        teachers: req.body.teachers,
+        lessonTime: req.body.lessonTime
     });
     console.log('Data updated');
     res.send(req.body);
@@ -312,11 +331,11 @@ server.post('/registration', (req, res, next) => {
     console.log('РЕГИСТРАЦИЯ');
     let hashedPassword = bcrypt.hashSync(req.body.password, 10);
 
-    // if (req.body.password.length < 8) {
-    //     res.send('8 symbols');
-    //     next();
-    //     return;
-    // }
+    if (req.body.password.length < 8) {
+        res.send('8 symbols');
+        next();
+        return;
+    }
 
     if (req.body.password !== req.body.confirmPassword) {
         console.log('Пароли не совпадают');
